@@ -211,6 +211,22 @@ def list_improvements():
     )
 
 
+@app.get("/originals", response_class=HTMLResponse)
+def list_originals():
+    improved = load_existing_improvements()
+    return (
+        """<button hx-get="/improvements" hx-target="#content">Improvements</button> """
+        + "\n".join(
+            f"""<div class="card">
+<div class="card-img"><img src="https://placehold.co/300x200"></div>
+<div class="card-title">{item.original.title}</div>
+<div class="card-summary">{item.original.summary}</div>
+</div>"""
+            for item in improved
+        )
+    )
+
+
 @app.get("/", response_class=HTMLResponse)
 def root_route():
     return """
