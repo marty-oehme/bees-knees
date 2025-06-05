@@ -81,7 +81,7 @@ def load_existing_improvements() -> list[Improvement]:
 def improve_originals(originals: list[Original]) -> list[Improvement]:
     improvements: list[Improvement] = []
     for orig in originals:
-        new_title = improve_with_groq(orig.title)
+        new_title = rewrite_title_with_groq(orig.title)
         new_summary = rewrite_summary_with_groq(orig, new_title)
 
         improvements.append(
@@ -90,7 +90,7 @@ def improve_originals(originals: list[Original]) -> list[Improvement]:
     return improvements
 
 
-def improve_with_groq(original_content: str) -> str:
+def rewrite_title_with_groq(original_content: str) -> str:
     client = Groq(api_key=os.getenv("GROQ_API_KEY", "NO_API_KEY_FOUND"))
 
     suggestions = client.chat.completions.create(
@@ -156,7 +156,7 @@ app.add_middleware(
 
 @app.get("/improve")
 def improve_headline(content: str):
-    return improve_with_groq(content)
+    return rewrite_title_with_groq(content)
 
 
 def start() -> None:
