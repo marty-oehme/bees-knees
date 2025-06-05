@@ -42,7 +42,7 @@ class Improvement:  # GoodJoke: Queen
 
 def grab_latest_originals() -> list[Original]:
     # TODO: Implement skipping any we already have
-    feed: feedparser.FeedParserDict = feedparser.parse(BEE_FEED_TEST)  # noqa: F841
+    feed: feedparser.FeedParserDict = feedparser.parse(BEE_FEED)  # noqa: F841
     results: list[Original] = []
     for entry in feed.entries:
         o = Original(
