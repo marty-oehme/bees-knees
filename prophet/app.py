@@ -4,7 +4,6 @@ import pickle
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from pprint import pprint
 from uuid import uuid4
 
 import feedparser
@@ -79,6 +78,22 @@ def load_existing_improvements() -> list[Improvement]:
         except FileNotFoundError as e:
             print(f"Error loading file {fname}: {e}")
     return improvements
+
+
+def keep_only_new_originals(
+    additional: list[Original], existing: list[Original] | None = None
+):
+    if not existing:
+        existing = [e.original for e in load_existing_improvements()]
+
+    existing_hashes = set([e.id for e in existing])
+
+    remaining: list[Original] = []
+    for new in additional:
+        if new.id not in existing_hashes:
+            remaining.append(new)
+
+    return remaining
 
 
 def improve_originals(originals: list[Original]) -> list[Improvement]:
@@ -179,8 +194,8 @@ def start() -> None:
 if __name__ == "__main__":
     # start()
 
-    orig = grab_latest_originals()
-    improved = improve_originals(orig)
+    adding = keep_only_new_originals(grab_latest_originals())
+    improved = improve_originals(adding)
     save_new_improvements(improved)
 
     improved = load_existing_improvements()
