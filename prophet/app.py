@@ -11,6 +11,7 @@ import feedparser
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
+from fastapi_utils.tasks import repeat_every
 from groq import Groq
 
 BEE_FEED = "https://babylonbee.com/feed"
@@ -187,11 +188,18 @@ def improve_summary(original_title: str, new_title: str, original_summary: str):
     return rewrite_summary_with_groq(o, new_title)
 
 
-@app.get("/update")
-def fetch_update():
+@app.on_event("startup")
+@repeat_every(seconds=3600)
+def update_articles():
     adding = keep_only_new_originals(grab_latest_originals())
     improved = improve_originals(adding)
     save_new_improvements(improved)
+    print(f"Updated articles. Added {len(improved)} new ones.")
+
+
+@app.get("/update")
+async def fetch_update():
+    await update_articles()
     return json.dumps(improved)
 
 
@@ -201,12 +209,12 @@ def list_improvements():
     return (
         """<button hx-get="/originals" hx-target="#content">Originals</button> """
         + "\n".join(
-            f"""<div class="card">
+            f"""<div class="card" style="border: 1px solid; font-size: 20px;>
 <div class="card-img"><img src="https://placehold.co/300x200"></div>
 <div class="card-title">{item.title}</div>
 <div class="card-summary">{item.summary}</div>
 </div>"""
-            for item in improved
+            for item in sorted(improved, key=lambda i: i.original.date, reverse=True)
         )
     )
 
@@ -222,7 +230,7 @@ def list_originals():
 <div class="card-title">{item.original.title}</div>
 <div class="card-summary">{item.original.summary}</div>
 </div>"""
-            for item in improved
+            for item in sorted(improved, key=lambda i: i.original.date, reverse=True)
         )
     )
 
