@@ -194,6 +194,23 @@ def fetch_update():
     save_new_improvements(improved)
     return json.dumps(improved)
 
+
+@app.get("/improvements", response_class=HTMLResponse)
+def list_improvements():
+    improved = load_existing_improvements()
+    return (
+        """<button hx-get="/originals" hx-target="#content">Originals</button> """
+        + "\n".join(
+            f"""<div class="card">
+<div class="card-img"><img src="https://placehold.co/300x200"></div>
+<div class="card-title">{item.title}</div>
+<div class="card-summary">{item.summary}</div>
+</div>"""
+            for item in improved
+        )
+    )
+
+
 @app.get("/", response_class=HTMLResponse)
 def root_route():
     return """
