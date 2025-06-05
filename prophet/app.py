@@ -1,6 +1,7 @@
+import hashlib
 import os
 import pickle
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from pprint import pprint
@@ -19,11 +20,14 @@ PICKLE_DIR = "/tmp/pollenprophet"
 
 @dataclass
 class Original:  # BadJoke: Sting
-    id: str  # should probably be a sha256sum of the title/link?
     title: str
     summary: str
     link: str
     date: datetime
+    id: str = field(init=False)
+
+    def __post_init__(self):
+        self.id = hashlib.sha256(self.link.encode()).hexdigest()
 
 
 @dataclass
@@ -40,7 +44,6 @@ def grab_latest_originals() -> list[Original]:
     results: list[Original] = []
     for entry in feed.entries:
         o = Original(
-            "test-id",
             title=entry.title,
             summary=entry.summary,
             link=entry.link,
