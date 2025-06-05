@@ -119,19 +119,30 @@ def rewrite_title_with_groq(original_content: str) -> str:
     suggestions = client.chat.completions.create(
         messages=[
             {
+                "role": "system",
+                "content": "You are a comedy writer at a satirical newspaper. Improve on the following satirical headline. Your new headline is funny, can involve current political events and has an edge to it. Print only the suggestions, with one suggestion on each line.",
+            },
+            {
                 "role": "user",
-                "content": f"Improve on the following satirical headline. The headline should be funny, can involve current political events and should have an edge to it. Print only the suggestions, with one suggestion on each line.\nOriginal: '{original_content}'",
-            }
+                "content": original_content,
+            },
         ],
         model="llama-3.3-70b-versatile",
     )
-    print("Suggestions: ", suggestions.choices[0].message.content)
+    suggestions_str = suggestions.choices[0].message.content
+    if not suggestions_str:
+        raise ValueError
+    print("Suggestions: ", suggestions_str)
     winner = client.chat.completions.create(
         messages=[
             {
+                "role": "system",
+                "content": "You are an editor at a satirical newspaper. Improve on the following satirical headline. For a given headline, you diligently evaluate: (1) Whether the headline is funny; (2) Whether the headline follows a clear satirical goal; (3) Whether the headline has sufficient substance and bite. Based on the outcomes of your review, you pick your favorite headline from the given suggestions and you make targeted revisions to it. Your output consists solely of the revised headline.",
+            },
+            {
                 "role": "user",
-                "content": f"From the following satirical headline suggestions, pick the strongest one and print it. Do not print anything else. The chosen suggestion should be the most edgy, able to trend on social media and funniest. The suggestions:\n\n{suggestions}",
-            }
+                "content": suggestions_str,
+            },
         ],
         model="llama-3.3-70b-versatile",
     )
