@@ -3,9 +3,16 @@ from dataclasses import dataclass
 from datetime import datetime
 from uuid import uuid4
 
+
+import feedparser
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from groq import Groq
+
+
+
+BEE_FEED = "https://babylonbee.com/feed"
+BEE_FEED_TEST = "test/resources/feed.atom"  # NOTE: Switch out when done testing
 
 
 @dataclass
@@ -23,6 +30,12 @@ class Improvement:  # GoodJoke: Queen
     title: str
     summary: str
     id: str = str(uuid4())
+
+
+
+def grab_latest_stings() -> list[str]:
+    feed: feedparser.FeedParserDict = feedparser.parse(BEE_FEED_TEST)  # noqa: F841
+    return feed.entries
 
 
 def improve_with_groq(original: str) -> str:
@@ -70,12 +83,18 @@ app.add_middleware(
 )
 
 
-@app.get("/test")
 @app.get("/improve")
 def improve_headline(content: str):
     return improve_with_groq(content)
 
 
+
+@app.get("/improvement")
+def improve_headline(content: str):
+    return improve_with_groq(content)
+
+
+@app.get("/testanswer")
 def read_root():
     response = {
         "data": [
@@ -107,7 +126,9 @@ def read_root():
 def start() -> None:
     from uvicorn import run
 
-    run("prophet.app:app", reload=True)
+    print(grab_latest_stings())
+
+    # run("prophet.app:app", reload=True)
 
 
 if __name__ == "__main__":
