@@ -162,17 +162,22 @@ def improve_headline(content: str):
 def start() -> None:
     from uvicorn import run
 
-    orig = grab_latest_originals()
-    improve_originals(orig)
-    improvements = [
-        Improvement(original=o, title="hithere", summary="alongsummary") for o in orig
-    ]
-    save_new_improvements(improvements)
-
-    pprint(load_existing_improvements())
-
-    # run("prophet.app:app", reload=True)
+    run("prophet.app:app", reload=True)
 
 
 if __name__ == "__main__":
-    start()
+    # start()
+
+    orig = grab_latest_originals()
+    improved = improve_originals(orig)
+    save_new_improvements(improved)
+
+    improved = load_existing_improvements()
+    for imp in improved:
+        print(f"Old Title: {imp.original.title}")
+        print(f"Old Summary: {imp.original.summary}")
+        print("\n")
+        print(f"Title: {imp.title}")
+        print(f"Summary: {imp.summary}")
+
+        print("-" * 50)
