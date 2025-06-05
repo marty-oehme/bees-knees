@@ -209,7 +209,7 @@ def list_improvements():
     return (
         """<button hx-get="/originals" hx-target="#content">Originals</button> """
         + "\n".join(
-            f"""<div class="card" style="border: 1px solid; font-size: 20px;>
+            f"""<div class="card">
 <div class="card-img"><img src="https://placehold.co/300x200"></div>
 <div class="card-title">{item.title}</div>
 <div class="card-summary">{item.summary}</div>
@@ -225,24 +225,44 @@ def list_originals():
     return (
         """<button hx-get="/improvements" hx-target="#content">Improvements</button> """
         + "\n".join(
-            f"""<div class="card">
-<div class="card-img"><img src="https://placehold.co/300x200"></div>
-<div class="card-title">{item.original.title}</div>
-<div class="card-summary">{item.original.summary}</div>
+            f"""
+<div class="card">
+    <div class="card-img"><img src="https://placehold.co/300x200"></div>
+    <div class="card-title">{item.original.title}</div>
+    <div class="card-summary">{item.original.summary}</div>
 </div>"""
             for item in sorted(improved, key=lambda i: i.original.date, reverse=True)
         )
     )
 
 
+style = """
+.card {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: auto;
+  margin-bottom: 40px;
+  width: 600px;
+}
+
+.card-title {
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+"""
+
+
 @app.get("/", response_class=HTMLResponse)
 def root_route():
-    return """
+    return f"""
 <!DOCTYPE html>
 <html>
 <head>
     <title>The Pollen Prophet</title>
     <script src="https://unpkg.com/htmx.org@1.6.1"></script>
+    <style>
+        {style}
+    </style>
 </head>
 <body>
     <h1>The Pollen Prophet</h1>
