@@ -9,6 +9,7 @@ from uuid import uuid4
 import feedparser
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 from groq import Groq
 
 BEE_FEED = "https://babylonbee.com/feed"
@@ -183,6 +184,24 @@ def improve_summary(original_title: str, new_title: str, original_summary: str):
         title=original_title, summary=original_summary, link="", date=datetime.now()
     )
     return rewrite_summary_with_groq(o, new_title)
+
+
+@app.get("/", response_class=HTMLResponse)
+def root_route():
+    return """
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FastAPI with HTMX</title>
+    <script src="https://unpkg.com/htmx.org@1.6.1"></script>
+</head>
+<body>
+    <h1>Welcome to FastAPI with HTMX</h1>
+    <div id="content"></div>
+    <button hx-get="/fetch-data" hx-target="#content">Fetch Data</button>
+</body>
+</html>
+        """
 
 
 def start() -> None:
