@@ -1,6 +1,9 @@
 import os
+import pickle
 from dataclasses import dataclass
 from datetime import datetime
+from pathlib import Path
+from pprint import pprint
 from uuid import uuid4
 
 import feedparser
@@ -10,6 +13,8 @@ from groq import Groq
 
 BEE_FEED = "https://babylonbee.com/feed"
 BEE_FEED_TEST = "test/resources/feed.atom"  # NOTE: Switch out when done testing
+
+PICKLE_DIR = "/tmp/pollenprophet"
 
 
 @dataclass
@@ -43,6 +48,34 @@ def grab_latest_originals() -> list[Original]:
         )
         results.append(o)
     return results
+
+
+def save_new_improvements(improvements: list[Improvement]) -> None:
+    save_dir = Path(PICKLE_DIR)
+    save_dir.mkdir(parents=True, exist_ok=True)
+    for imp in improvements:
+        fname = save_dir / f"{int(imp.original.date.timestamp())}_{imp.id}"
+        try:
+            with open(fname, "wb") as f:
+                pickle.dump(imp, f)
+                print(f"Saved {fname}")
+        except Exception as e:
+            print(f"Error saving file {fname}: {e}")
+
+
+def load_existing_improvements() -> list[Improvement]:
+    improvements: list[Improvement] = []
+    for fname in Path(PICKLE_DIR).iterdir():
+        if not fname.is_file():
+            continue
+
+        try:
+            with open(fname, "rb") as f:
+                obj: Improvement = pickle.load(f)
+                improvements.append(obj)
+        except FileNotFoundError as e:
+            print(f"Error loading file {fname}: {e}")
+    return improvements
 
 
 def improve_with_groq(original: str) -> str:
@@ -98,7 +131,14 @@ def improve_headline(content: str):
 def start() -> None:
     from uvicorn import run
 
-    grab_latest_originals()
+    orig = grab_latest_originals()
+    improvements = [
+        Improvement(original=o, title="hithere", summary="alongsummary")
+        for o in orig
+    ]
+    save_new_improvements(improvements)
+
+    pprint(load_existing_improvements())
 
     # run("prophet.app:app", reload=True)
 
