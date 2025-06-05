@@ -89,40 +89,6 @@ def improve_headline(content: str):
 
 
 
-@app.get("/improvement")
-def improve_headline(content: str):
-    return improve_with_groq(content)
-
-
-@app.get("/testanswer")
-def read_root():
-    response = {
-        "data": [
-            {
-                "id": 1,
-                "name": "Chocolate",
-                "price": "4.50",
-            },
-            {
-                "id": 2,
-                "name": "Sorvete",
-                "price": "2.42",
-            },
-            {
-                "id": 3,
-                "name": "Refrigerante",
-                "price": "4.90",
-            },
-            {
-                "id": 4,
-                "name": "X-salada",
-                "price": "7.99",
-            },
-        ]
-    }
-    return response
-
-
 def start() -> None:
     from uvicorn import run
 
