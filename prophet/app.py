@@ -3,13 +3,10 @@ from dataclasses import dataclass
 from datetime import datetime
 from uuid import uuid4
 
-
 import feedparser
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from groq import Groq
-
-
 
 BEE_FEED = "https://babylonbee.com/feed"
 BEE_FEED_TEST = "test/resources/feed.atom"  # NOTE: Switch out when done testing
@@ -32,10 +29,20 @@ class Improvement:  # GoodJoke: Queen
     id: str = str(uuid4())
 
 
-
-def grab_latest_stings() -> list[str]:
+def grab_latest_originals() -> list[Original]:
+    # TODO: Implement skipping any we already have
     feed: feedparser.FeedParserDict = feedparser.parse(BEE_FEED_TEST)  # noqa: F841
-    return feed.entries
+    results: list[Original] = []
+    for entry in feed.entries:
+        o = Original(
+            "test-id",
+            title=entry.title,
+            summary=entry.summary,
+            link=entry.link,
+            date=datetime.strptime(entry.published, "%a, %d %b %Y %H:%M:%S %z"),
+        )
+        results.append(o)
+    return results
 
 
 def improve_with_groq(original: str) -> str:
@@ -88,11 +95,10 @@ def improve_headline(content: str):
     return improve_with_groq(content)
 
 
-
 def start() -> None:
     from uvicorn import run
 
-    print(grab_latest_stings())
+    grab_latest_originals()
 
     # run("prophet.app:app", reload=True)
 
