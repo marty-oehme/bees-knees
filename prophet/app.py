@@ -157,7 +157,7 @@ app.add_middleware(
 )
 
 
-@app.get("/improve")
+@app.get("/improve-title")
 def improve_headline(content: str):
     return rewrite_title_with_groq(content)
 
