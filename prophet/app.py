@@ -233,13 +233,13 @@ def root_route():
 <!DOCTYPE html>
 <html>
 <head>
-    <title>FastAPI with HTMX</title>
+    <title>The Pollen Prophet</title>
     <script src="https://unpkg.com/htmx.org@1.6.1"></script>
 </head>
 <body>
-    <h1>Welcome to FastAPI with HTMX</h1>
-    <div id="content"></div>
-    <button hx-get="/fetch-data" hx-target="#content">Fetch Data</button>
+    <h1>The Pollen Prophet</h1>
+    <h2>Making funny since 2025 what ought not bee.</h2>
+    <div hx-get="/improvements" hx-target="#content" hx-trigger="load" id="content"></div>
 </body>
 </html>
         """
