@@ -19,6 +19,8 @@ BEE_FEED_TEST = "test/resources/feed_short.atom"  # NOTE: Switch out when done t
 
 PICKLE_DIR = "/tmp/pollenprophet"
 
+REFRESH_PERIOD = 3600  # between fetching articles, in seconds
+
 
 @dataclass
 class Original:  # BadJoke: Sting
@@ -189,7 +191,7 @@ def improve_summary(original_title: str, new_title: str, original_summary: str):
 
 
 @app.on_event("startup")
-@repeat_every(seconds=3600)
+@repeat_every(seconds=REFRESH_PERIOD)
 def refresh_articles():
     adding = keep_only_new_originals(grab_latest_originals())
     improved = improve_originals(adding)
