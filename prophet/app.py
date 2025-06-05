@@ -162,6 +162,14 @@ def improve_headline(content: str):
     return rewrite_title_with_groq(content)
 
 
+@app.get("/improve-summary")
+def improve_summary(original_title: str, new_title: str, original_summary: str):
+    o = Original(
+        title=original_title, summary=original_summary, link="", date=datetime.now()
+    )
+    return rewrite_summary_with_groq(o, new_title)
+
+
 def start() -> None:
     from uvicorn import run
 
