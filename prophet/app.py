@@ -116,7 +116,7 @@ def rewrite_title_with_groq(original_content: str) -> str:
     winner_str = winner.choices[0].message.content
     if not winner_str:
         raise ValueError
-    return winner_str
+    return winner_str.strip(" \"'")
 
 
 def rewrite_summary_with_groq(orig: Original, improved_title: str) -> str:
@@ -135,7 +135,7 @@ def rewrite_summary_with_groq(orig: Original, improved_title: str) -> str:
     if not summary_str:
         raise ValueError
     print("Improved summary", summary_str)
-    return summary_str
+    return summary_str.strip(" \"'")
 
 
 app = FastAPI()
