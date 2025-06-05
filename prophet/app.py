@@ -241,8 +241,11 @@ def list_improvements():
     return (
         """<button hx-get="/originals" hx-target="#content">Originals</button> """
         + "\n".join(
-            f"""<div class="card">
-<div class="card-img"><img src="https://placehold.co/300x200"></div>
+            f"""
+<div class="card">
+    <div class="card-img">
+        <img src="{item.original.image_link if item.original.image_link else "https://placehold.co/300x200"}" width="600">
+    </div>
 <div class="card-title">{item.title}</div>
 <div class="card-summary">{item.summary}</div>
 </div>"""
@@ -259,7 +262,9 @@ def list_originals():
         + "\n".join(
             f"""
 <div class="card">
-    <div class="card-img"><img src="https://placehold.co/300x200"></div>
+    <div class="card-img">
+        <img src="{item.original.image_link if item.original.image_link else "https://placehold.co/300x200"}" width="600">
+    </div>
     <div class="card-title">{item.original.title}</div>
     <div class="card-summary">{item.original.summary}</div>
 </div>"""
