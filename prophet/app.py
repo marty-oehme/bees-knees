@@ -1,4 +1,5 @@
 import hashlib
+import json
 import os
 import pickle
 from dataclasses import dataclass, field
@@ -185,6 +186,13 @@ def improve_summary(original_title: str, new_title: str, original_summary: str):
     )
     return rewrite_summary_with_groq(o, new_title)
 
+
+@app.get("/update")
+def fetch_update():
+    adding = keep_only_new_originals(grab_latest_originals())
+    improved = improve_originals(adding)
+    save_new_improvements(improved)
+    return json.dumps(improved)
 
 @app.get("/", response_class=HTMLResponse)
 def root_route():
