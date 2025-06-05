@@ -77,15 +77,14 @@ def load_existing_improvements() -> list[Improvement]:
             print(f"Error loading file {fname}: {e}")
     return improvements
 
-
-def improve_with_groq(original: str) -> str:
+def improve_with_groq(original_content: str) -> str:
     client = Groq(api_key=os.getenv("GROQ_API_KEY", "NO_API_KEY_FOUND"))
 
     suggestions = client.chat.completions.create(
         messages=[
             {
                 "role": "user",
-                "content": f"Improve on the following satirical headline. The headline should be funny, can involve current political events and should have an edge to it. Print only the suggestions, with one suggestion on each line.\nOriginal: '{original}'",
+                "content": f"Improve on the following satirical headline. The headline should be funny, can involve current political events and should have an edge to it. Print only the suggestions, with one suggestion on each line.\nOriginal: '{original_content}'",
             }
         ],
         model="llama-3.3-70b-versatile",
