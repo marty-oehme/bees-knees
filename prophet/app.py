@@ -77,6 +77,16 @@ def load_existing_improvements() -> list[Improvement]:
             print(f"Error loading file {fname}: {e}")
     return improvements
 
+
+def improve_originals(originals: list[Original]) -> list[Improvement]:
+    improvements: list[Improvement] = []
+    for orig in originals:
+        better_title = improve_with_groq(orig.title)
+
+        improvements.append(Improvement(original=orig, title=better_title, summary=""))
+    return improvements
+
+
 def improve_with_groq(original_content: str) -> str:
     client = Groq(api_key=os.getenv("GROQ_API_KEY", "NO_API_KEY_FOUND"))
 
