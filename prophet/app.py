@@ -1,7 +1,30 @@
 import os
+from dataclasses import dataclass
+from datetime import datetime
+from uuid import uuid4
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from groq import Groq
+
+
+@dataclass
+class Original:  # BadJoke: Sting
+    id: str  # should probably be a sha256sum of the title/link?
+    title: str
+    summary: str
+    link: str
+    date: datetime
+
+
+@dataclass
+class Improvement:  # GoodJoke: Queen
+    original: Original
+    title: str
+    summary: str
+    id: str = str(uuid4())
+
+
 def improve_with_groq(original: str) -> str:
     client = Groq(api_key=os.getenv("GROQ_API_KEY", "NO_API_KEY_FOUND"))
 
@@ -51,6 +74,7 @@ app.add_middleware(
 @app.get("/improve")
 def improve_headline(content: str):
     return improve_with_groq(content)
+
 
 def read_root():
     response = {
