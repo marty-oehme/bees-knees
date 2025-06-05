@@ -319,16 +319,20 @@ def start() -> None:
 if __name__ == "__main__":
     # start()
 
-    adding = keep_only_new_originals(grab_latest_originals())
-    improved = improve_originals(adding)
-    save_new_improvements(improved)
+    # adding = keep_only_new_originals(grab_latest_originals())
+    # improved = improve_originals(adding)
+    # save_new_improvements(improved)
 
+    # migrate to newer version
     improved = load_existing_improvements()
     for imp in improved:
+        imp.original.__post_init__()
         print(f"Old Title: {imp.original.title}")
         print(f"Old Summary: {imp.original.summary}")
+        print(f"Old picture: {imp.original.image_link}")
         print("\n")
         print(f"Title: {imp.title}")
         print(f"Summary: {imp.summary}")
 
         print("-" * 50)
+    save_new_improvements(improved)
