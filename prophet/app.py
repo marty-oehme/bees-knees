@@ -116,6 +116,25 @@ def improve_with_groq(original_content: str) -> str:
     return winner_str
 
 
+def rewrite_summary_with_groq(orig: Original, improved_title: str) -> str:
+    client = Groq(api_key=os.getenv("GROQ_API_KEY", "NO_API_KEY_FOUND"))
+
+    summary = client.chat.completions.create(
+        messages=[
+            {
+                "role": "user",
+                "content": f"Below there is an original title and an original summary. Then follows an improved title. Write an improved summary based on the original summary which fits to the improved title. Only output the improved summary.\n\nTitle:{orig.title}\nSummary:{orig.summary}\n---\nTitle:{improved_title}\nSummary:",
+            }
+        ],
+        model="llama-3.3-70b-versatile",
+    )
+    summary_str = summary.choices[0].message.content
+    if not summary_str:
+        raise ValueError
+    print("Improved summary", summary_str)
+    return summary_str
+
+
 app = FastAPI()
 
 origins = [
@@ -142,8 +161,7 @@ def start() -> None:
 
     orig = grab_latest_originals()
     improvements = [
-        Improvement(original=o, title="hithere", summary="alongsummary")
-        for o in orig
+        Improvement(original=o, title="hithere", summary="alongsummary") for o in orig
     ]
     save_new_improvements(improvements)
 
