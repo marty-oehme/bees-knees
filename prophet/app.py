@@ -190,7 +190,7 @@ def improve_summary(original_title: str, new_title: str, original_summary: str):
 
 @app.on_event("startup")
 @repeat_every(seconds=3600)
-def update_articles():
+def refresh_articles():
     adding = keep_only_new_originals(grab_latest_originals())
     improved = improve_originals(adding)
     save_new_improvements(improved)
@@ -199,7 +199,7 @@ def update_articles():
 
 @app.get("/update")
 async def fetch_update():
-    await update_articles()
+    await refresh_articles()
     return json.dumps(improved)
 
 
