@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from groq import Groq
 
 BEE_FEED = "https://babylonbee.com/feed"
-BEE_FEED_TEST = "test/resources/feed.atom"  # NOTE: Switch out when done testing
+BEE_FEED_TEST = "test/resources/feed_short.atom"  # NOTE: Switch out when done testing
 
 PICKLE_DIR = "/tmp/pollenprophet"
 
@@ -81,9 +81,12 @@ def load_existing_improvements() -> list[Improvement]:
 def improve_originals(originals: list[Original]) -> list[Improvement]:
     improvements: list[Improvement] = []
     for orig in originals:
-        better_title = improve_with_groq(orig.title)
+        new_title = improve_with_groq(orig.title)
+        new_summary = rewrite_summary_with_groq(orig, new_title)
 
-        improvements.append(Improvement(original=orig, title=better_title, summary=""))
+        improvements.append(
+            Improvement(original=orig, title=new_title, summary=new_summary)
+        )
     return improvements
 
 
@@ -160,6 +163,7 @@ def start() -> None:
     from uvicorn import run
 
     orig = grab_latest_originals()
+    improve_originals(orig)
     improvements = [
         Improvement(original=o, title="hithere", summary="alongsummary") for o in orig
     ]
