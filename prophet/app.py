@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi_utils.tasks import repeat_every
 
+from prophet import view
 from prophet.domain.improvement import Improvement
 from prophet.domain.improvement_repo import IImprovementRepo
 from prophet.domain.original import Original
@@ -64,21 +65,27 @@ def improve_originals(originals: list[Original]) -> list[Improvement]:
     return improvements
 
 
-app = FastAPI()
-app.mount("/static", StaticFiles(directory="static"), name="static")
+def init() -> FastAPI:
+    app = FastAPI()
+    app.mount("/static", StaticFiles(directory="static"), name="static")
 
-origins = [
-    "http://localhost",
-    "http://localhost:8080",
-]
+    origins = [
+        "http://localhost",
+        "http://localhost:8080",
+    ]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+    view.define_routes(app)
+    return app
+
+
+app = init()
 
 
 @app.get("/improve-title")
@@ -94,6 +101,7 @@ def improve_summary(original_title: str, new_title: str, original_summary: str):
     return llm.rewrite_summary(o, new_title)
 
 
+# TODO: Switch to lifecycle events to avoid deprecated method
 @app.on_event("startup")
 @repeat_every(seconds=REFRESH_PERIOD)
 async def refresh_articles():
