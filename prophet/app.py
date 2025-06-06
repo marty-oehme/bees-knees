@@ -1,6 +1,5 @@
 import hashlib
 import json
-import os
 import pickle
 import re
 from dataclasses import dataclass, field
@@ -15,12 +14,16 @@ from fastapi.responses import HTMLResponse
 from fastapi_utils.tasks import repeat_every
 from groq import Groq
 
+from prophet.config import AiConfig
+
 BEE_FEED = "https://babylonbee.com/feed"
 BEE_FEED_TEST = "test/resources/feed_short.atom"  # NOTE: Switch out when done testing
 
 PICKLE_DIR = "/tmp/pollenprophet"
 
 REFRESH_PERIOD = 3600  # between fetching articles, in seconds
+
+config_ai: AiConfig = AiConfig.from_env()
 
 
 @dataclass
@@ -133,7 +136,7 @@ def improve_originals(originals: list[Original]) -> list[Improvement]:
 
 
 def rewrite_title_with_groq(original_content: str) -> str:
-    client = Groq(api_key=os.getenv("GROQ_API_KEY", "NO_API_KEY_FOUND"))
+    client = Groq(api_key=config_ai.API_KEY)
 
     suggestions = client.chat.completions.create(
         messages=[
@@ -173,7 +176,7 @@ def rewrite_title_with_groq(original_content: str) -> str:
 
 
 def rewrite_summary_with_groq(orig: Original, improved_title: str) -> str:
-    client = Groq(api_key=os.getenv("GROQ_API_KEY", "NO_API_KEY_FOUND"))
+    client = Groq(api_key=config_ai.API_KEY)
 
     summary = client.chat.completions.create(
         messages=[
