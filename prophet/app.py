@@ -84,8 +84,8 @@ def keep_only_new_originals(
 def improve_originals(originals: list[Original]) -> list[Improvement]:
     improvements: list[Improvement] = []
     for orig in originals:
-        new_title = llm.rewrite_title_with_groq(orig.title)
-        new_summary = llm.rewrite_summary_with_groq(orig, new_title)
+        new_title = llm.rewrite_title(orig.title)
+        new_summary = llm.rewrite_summary(orig, new_title)
 
         improvements.append(
             Improvement(original=orig, title=new_title, summary=new_summary)
@@ -111,7 +111,7 @@ app.add_middleware(
 
 @app.get("/improve-title")
 def improve_headline(content: str):
-    return llm.rewrite_title_with_groq(content)
+    return llm.rewrite_title(content)
 
 
 @app.get("/improve-summary")
@@ -119,7 +119,7 @@ def improve_summary(original_title: str, new_title: str, original_summary: str):
     o = Original(
         title=original_title, summary=original_summary, link="", date=datetime.now()
     )
-    return llm.rewrite_summary_with_groq(o, new_title)
+    return llm.rewrite_summary(o, new_title)
 
 
 @app.on_event("startup")
@@ -137,6 +137,7 @@ async def fetch_update():
     return json.dumps(improved)
 
 
+## HTML (& hyperdata) responses
 @app.get("/improvements", response_class=HTMLResponse)
 def list_improvements():
     improved = load_existing_improvements()

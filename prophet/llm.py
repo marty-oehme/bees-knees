@@ -14,7 +14,7 @@ class LLMClient:
         self.config_ai = config_ai if config_ai else AiConfig.from_env()
         self.client = client if client else Groq(api_key=self.config_ai.API_KEY)
 
-    def rewrite_title_with_groq(self, original_content: str) -> str:
+    def rewrite_title(self, original_content: str) -> str:
         suggestions = self.client.chat.completions.create(
             messages=[
                 {
@@ -51,7 +51,7 @@ class LLMClient:
             raise ValueError
         return winner_str.strip(" \"'")
 
-    def rewrite_summary_with_groq(self, orig: Original, improved_title: str) -> str:
+    def rewrite_summary(self, orig: Original, improved_title: str) -> str:
         summary = self.client.chat.completions.create(
             messages=[
                 {
