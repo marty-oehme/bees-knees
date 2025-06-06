@@ -1,7 +1,7 @@
 from groq import Groq
 
-from prophet.data import Original
 from prophet.config import AiConfig
+from prophet.domain.original import Original
 
 
 class LLMClient:

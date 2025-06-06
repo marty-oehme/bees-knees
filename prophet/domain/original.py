@@ -2,7 +2,6 @@ import hashlib
 import re
 from dataclasses import dataclass, field
 from datetime import datetime
-from uuid import uuid4
 
 
 @dataclass
@@ -33,11 +32,3 @@ class Original:  # BadJoke: Sting
         if extracted[0]:
             self.image_link = extracted[0]
             self.summary = extracted[1]
-
-
-@dataclass
-class Improvement:  # GoodJoke: Queen
-    original: Original
-    title: str
-    summary: str
-    id: str = str(uuid4())

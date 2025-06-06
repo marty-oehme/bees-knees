@@ -9,7 +9,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from fastapi_utils.tasks import repeat_every
 
-from prophet.data import Improvement, Original
+from prophet.domain.improvement import Improvement
+from prophet.domain.original import Original
 from prophet.llm import LLMClient
 
 BEE_FEED = "https://babylonbee.com/feed"
