@@ -4,6 +4,7 @@ from datetime import datetime
 import feedparser
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from fastapi_utils.tasks import repeat_every
 
 from prophet.domain.improvement import Improvement
@@ -64,6 +65,7 @@ def improve_originals(originals: list[Original]) -> list[Improvement]:
 
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 origins = [
     "http://localhost",
