@@ -96,16 +96,17 @@ def improve_summary(original_title: str, new_title: str, original_summary: str):
 
 @app.on_event("startup")
 @repeat_every(seconds=REFRESH_PERIOD)
-def refresh_articles():
-    adding = keep_only_new_originals(grab_latest_originals())
-    improved = improve_originals(adding)
-    repo.add_all(improved)
-    print(f"Updated articles. Added {len(improved)} new ones.")
+async def refresh_articles():
+    _ = await fetch_update()
 
 
 @app.get("/update")
-async def fetch_update():
-    await refresh_articles()
+async def fetch_update(debug_print: bool = True):
+    adding = keep_only_new_originals(grab_latest_originals())
+    improved = improve_originals(adding)
+    repo.add_all(improved)
+    if debug_print:
+        print(f"Updated articles. Added {len(improved)} new ones.")
     return json.dumps(improved)
 
 
