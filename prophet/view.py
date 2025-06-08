@@ -14,43 +14,19 @@ templates = Jinja2Templates(directory="templates")
 
 def define_routes(app: FastAPI):
     @app.get("/improvements", response_class=HTMLResponse)
-    def list_improvements():
+    def list_improvements(request: Request):
         improved = repo.get_all()
-        return (
-            """<button hx-get="/originals" hx-target="#content">Originals</button> """
-            + "\n".join(
-                f"""
-    <div class="card">
-        <div class="card-img">
-            <img src="{item.original.image_link if item.original.image_link else "https://placehold.co/300x200"}" width="600">
-        </div>
-    <div class="card-title">{item.title}</div>
-    <div class="card-summary">{item.summary}</div>
-    </div>"""
-                for item in sorted(
-                    improved, key=lambda i: i.original.date, reverse=True
-                )
-            )
+        return templates.TemplateResponse(
+            request=request,
+            name="list_improvements.html",
+            context={"articles": improved},
         )
 
     @app.get("/originals", response_class=HTMLResponse)
-    def list_originals():
+    def list_originals(request: Request):
         improved = repo.get_all()
-        return (
-            """<button hx-get="/improvements" hx-target="#content">Improvements</button> """
-            + "\n".join(
-                f"""
-    <div class="card">
-        <div class="card-img">
-            <img src="{item.original.image_link if item.original.image_link else "https://placehold.co/300x200"}" width="600">
-        </div>
-        <div class="card-title">{item.original.title}</div>
-        <div class="card-summary">{item.original.summary}</div>
-    </div>"""
-                for item in sorted(
-                    improved, key=lambda i: i.original.date, reverse=True
-                )
-            )
+        return templates.TemplateResponse(
+            request=request, name="list_originals.html", context={"articles": improved}
         )
 
     @app.get("/", response_class=HTMLResponse)

@@ -1,0 +1,11 @@
+<button hx-get="/improvements" hx-target="#content">Improvements</button>
+
+{% for article in articles %}
+<div class="card">
+  <div class="card-title">{{article.original.title}}</div>
+  <div class="card-img">
+    <img src="{{ article.original.image_link }}" width="600" />
+  </div>
+  <div class="card-summary">{{article.original.summary}}</div>
+</div>
+{% endfor %}
