@@ -1,12 +1,15 @@
 # pyright: reportUnusedFunction=false
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 
 from prophet.domain.improvement_repo import IImprovementRepo
 from prophet.infra.improvement_pickle_repo import ImprovementPickleRepo
 
 repo: IImprovementRepo = ImprovementPickleRepo()
+
+templates = Jinja2Templates(directory="templates")
 
 
 def define_routes(app: FastAPI):
@@ -51,19 +54,5 @@ def define_routes(app: FastAPI):
         )
 
     @app.get("/", response_class=HTMLResponse)
-    def root_route():
-        return """
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>The Pollen Prophet</title>
-        <script src="https://unpkg.com/htmx.org@1.6.1"></script>
-        <link href="static/style.css" rel="stylesheet"
-    </head>
-    <body>
-        <h1>The Pollen Prophet</h1>
-        <h2>Making funny since 2025 what ought not bee.</h2>
-        <div hx-get="/improvements" hx-target="#content" hx-trigger="load" id="content"></div>
-    </body>
-    </html>
-            """
+    def root_route(request: Request):
+        return templates.TemplateResponse(request=request, name="index.html")
