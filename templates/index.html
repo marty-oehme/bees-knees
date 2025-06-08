@@ -14,12 +14,15 @@
   <body>
     <h1>The Pollen Prophet</h1>
     <h2>Making funny since 2025 what ought not bee.</h2>
-    <div
-      hx-get="/improvements"
-      hx-target="#content"
-      hx-trigger="load"
-      id="content"
-    ></div>
-    {% include "floating_button.html" %}
+    <div class="article" x-data="{ showing_improvements: true }">
+      <div
+        hx-get="/improvements"
+        hx-target="#content"
+        hx-trigger="revealed"
+        id="content"
+        :class="showing_improvements ? '' : 'hidden'"
+      ></div>
+      {% include "floating_button.html" %}
+    </div>
   </body>
 </html>

@@ -1,23 +1,33 @@
-<div class="fab-holder">
+<div class="fab-holder" x-data="{ showing_improvements: true }">
   <div class="main-btn fab-icon-holder">
     <div class="icon">
       <i class="fas fa-info"></i>
     </div>
   </div>
   <ul class="fab-options">
-    <li hx-get="/originals" hx-target="#content">
+    <li
+      hx-get="/originals"
+      hx-target="#content"
+      x-bind:class="showing_improvements ? '' : 'hidden'"
+      x-on:click="showing_improvements = ! showing_improvements"
+    >
       <span class="fab-label">Show Originals</span>
       <div class="option-btn fab-icon-holder">
         <div class="icon">
-          <i class="fas fa-file-alt"></i>
+          <i class="fas fa-frown"></i>
         </div>
       </div>
     </li>
-    <li hx-get="/improvements" hx-target="#content">
+    <li
+      hx-get="/improvements"
+      hx-target="#content"
+      x-bind:class="showing_improvements ? 'hidden' : ''"
+      x-on:click="showing_improvements = ! showing_improvements"
+    >
       <span class="fab-label">Show Improved</span>
       <div class="option-btn fab-icon-holder">
         <div class="icon">
-          <i class="fas fa-file"></i>
+          <i class="fas fa-smile"></i>
         </div>
       </div>
     </li>
