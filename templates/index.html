@@ -3,6 +3,8 @@
   <head>
     <title>The Pollen Prophet</title>
     <script src="https://unpkg.com/htmx.org@1.6.1"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"></script>
+
     <link href="static/style.css" rel="stylesheet" />
   </head>
   <body>
@@ -14,5 +16,46 @@
       hx-trigger="load"
       id="content"
     ></div>
+    <div class="fab-holder">
+      <div class="main-btn fab-icon-holder">
+        <div class="icon">
+          <i class="fas fa-info"></i>
+        </div>
+      </div>
+      <ul class="fab-options">
+        <li>
+          <span class="fab-label">Show Originals</span>
+          <div class="option-btn fab-icon-holder">
+            <div class="icon">
+              <i class="fas fa-file-alt"></i>
+            </div>
+          </div>
+        </li>
+        <li>
+          <span class="fab-label">About</span>
+          <div class="option-btn fab-icon-holder">
+            <div class="icon">
+              <i class="fas fa-question"></i>
+            </div>
+          </div>
+        </li>
+        <li>
+          <span class="fab-label">Feedback</span>
+          <div class="option-btn fab-icon-holder">
+            <div class="icon">
+              <i class="fas fa-comment-alt"></i>
+            </div>
+          </div>
+        </li>
+        <!-- <li> -->
+        <!--   <span class="fab-label">Something else</span> -->
+        <!--   <div class="option-btn fab-icon-holder"> -->
+        <!--     <div class="icon"> -->
+        <!--       <i class="fas fa-question"></i> -->
+        <!--     </div> -->
+        <!--   </div> -->
+        <!-- </li> -->
+      </ul>
+    </div>
   </body>
 </html>
