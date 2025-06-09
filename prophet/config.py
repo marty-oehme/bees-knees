@@ -26,13 +26,15 @@ class AiConfig:
 class SupaConfig:
     URL: str
     KEY: str
+    TABLE: str
 
     @classmethod
     def from_env(cls) -> "SupaConfig":
         URL = os.getenv("SUPABASE_URL", "")
         KEY = os.getenv("SUPABASE_KEY", "")
+        TABLE = os.getenv("SUPABASE_TABLE", "improvements")
 
-        values: dict[str, str] = {"URL": URL, "KEY": KEY}
+        values: dict[str, str] = {"URL": URL, "KEY": KEY, "TABLE": TABLE}
 
         for name, val in values.items():
             if not val:
