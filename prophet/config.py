@@ -20,3 +20,22 @@ class AiConfig:
             raise ValueError(f"{API_KEY} cannot be empty")
 
         return cls(**{"API_KEY": API_KEY})
+
+
+@dataclass
+class SupaConfig:
+    URL: str
+    KEY: str
+
+    @classmethod
+    def from_env(cls) -> "SupaConfig":
+        URL = os.getenv("SUPABASE_URL", "")
+        KEY = os.getenv("SUPABASE_KEY", "")
+
+        values: dict[str, str] = {"URL": URL, "KEY": KEY}
+
+        for name, val in values.items():
+            if not val:
+                raise ValueError(f"SUPABASE_{name} cannot be empty")
+
+        return cls(**values)
