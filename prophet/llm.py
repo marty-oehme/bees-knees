@@ -1,10 +1,11 @@
 from groq import Groq
 
 from prophet.config import AiConfig
+from prophet.domain.llm import LLMClient
 from prophet.domain.original import Original
 
 
-class GroqClient:
+class GroqClient(LLMClient):
     config_ai: AiConfig
     client: Groq
 
@@ -57,7 +58,12 @@ class GroqClient:
             raise ValueError
         return winner_str.strip(" \"'")
 
-    def rewrite_summary(self, orig: Original, improved_title: str) -> str:
+    def rewrite_summary(
+        self, original: Original, improved_title: str | None = None
+    ) -> str:
+        if not improved_title:
+            improved_title = self.rewrite_title(original.title)
+
         no_shocking_turn: bool = True
         summary = self.client.chat.completions.create(
             messages=[
@@ -66,7 +72,7 @@ class GroqClient:
                     "content": f"""
 Below there is an original title and an original summary. Then follows an improved title. Write an improved summary based on the original summary which fits to the improved title.
 {"Do not use the phrase: 'in a surprising turn of events' or 'in a shocking turn of events.'" if no_shocking_turn else ""}
-Only output the improved summary.\n\nTitle:{orig.title}\nSummary:{orig.summary}\n---\nTitle:{improved_title}\nSummary:""",
+Only output the improved summary.\n\nTitle:{original.title}\nSummary:{original.summary}\n---\nTitle:{improved_title}\nSummary:""",
                 }
             ],
             model="llama-3.3-70b-versatile",
