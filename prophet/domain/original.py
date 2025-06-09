@@ -18,12 +18,13 @@ class Original:  # BadJoke: Sting
         m = re.match(r'<img src="(?P<img>.+?)"', s)
         try:
             img = m.group("img")
-        except (IndexError, NameError):
+        except (IndexError, AttributeError):
             return ("", s)
 
         if img:
             rest = re.sub(r"<img src=.+?>", "", s)
             return (img, rest)
+        return ("", s)
 
     def __post_init__(self):
         self.id = hashlib.sha256(self.link.encode()).hexdigest()
