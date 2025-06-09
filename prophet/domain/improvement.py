@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from uuid import uuid4
 
 from prophet.domain.original import Original
@@ -9,4 +9,4 @@ class Improvement:  # GoodJoke: Queen
     original: Original
     title: str
     summary: str
-    id: str = str(uuid4())
+    id: str = field(default_factory=lambda: str(uuid4()))
