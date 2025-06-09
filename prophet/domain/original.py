@@ -26,10 +26,13 @@ class Original:  # BadJoke: Sting
             return (img, rest)
         return ("", s)
 
+    def _remove_html_tags(self, s: str) -> str:
+        return re.sub(r"<.*?>", "", s)
+
     def __post_init__(self):
         self.id = hashlib.sha256(self.link.encode()).hexdigest()
 
         extracted = self._extract_img(self.summary)
         if extracted[0]:
             self.image_link = extracted[0]
-            self.summary = extracted[1]
+            self.summary = self._remove_html_tags(extracted[1])
