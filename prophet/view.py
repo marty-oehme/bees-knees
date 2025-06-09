@@ -6,8 +6,9 @@ from fastapi.templating import Jinja2Templates
 
 from prophet.domain.improvement_repo import IImprovementRepo
 from prophet.infra.improvement_pickle_repo import ImprovementPickleRepo
+from prophet.infra.improvement_supa_repo import ImprovementSupaRepo
 
-repo: IImprovementRepo = ImprovementPickleRepo()
+repo: IImprovementRepo = ImprovementSupaRepo()
 
 templates = Jinja2Templates(directory="templates")
 

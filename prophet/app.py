@@ -12,6 +12,7 @@ from prophet.domain.improvement import Improvement
 from prophet.domain.improvement_repo import IImprovementRepo
 from prophet.domain.original import Original
 from prophet.infra.improvement_pickle_repo import ImprovementPickleRepo
+from prophet.infra.improvement_supa_repo import ImprovementSupaRepo
 from prophet.llm import LLMClient
 
 BEE_FEED = "https://babylonbee.com/feed"
@@ -20,7 +21,7 @@ BEE_FEED_TEST = "test/resources/feed_short.atom"  # NOTE: Switch out when done t
 REFRESH_PERIOD = 3600  # between fetching articles, in seconds
 
 llm: LLMClient = LLMClient()
-repo: IImprovementRepo = ImprovementPickleRepo()
+repo: IImprovementRepo = ImprovementSupaRepo()
 
 
 def grab_latest_originals() -> list[Original]:
