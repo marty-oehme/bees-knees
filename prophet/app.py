@@ -13,14 +13,14 @@ from prophet.domain.improvement_repo import IImprovementRepo
 from prophet.domain.original import Original
 from prophet.infra.improvement_pickle_repo import ImprovementPickleRepo
 from prophet.infra.improvement_supa_repo import ImprovementSupaRepo
-from prophet.llm import LLMClient
+from prophet.llm import GroqClient
 
 BEE_FEED = "https://babylonbee.com/feed"
 BEE_FEED_TEST = "test/resources/feed_short.atom"  # NOTE: Switch out when done testing
 
 REFRESH_PERIOD = 3600  # between fetching articles, in seconds
 
-llm: LLMClient = LLMClient()
+llm: GroqClient = GroqClient()
 repo: IImprovementRepo = ImprovementSupaRepo()
 
 

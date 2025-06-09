@@ -4,7 +4,7 @@ from prophet.config import AiConfig
 from prophet.domain.original import Original
 
 
-class LLMClient:
+class GroqClient:
     config_ai: AiConfig
     client: Groq
 
