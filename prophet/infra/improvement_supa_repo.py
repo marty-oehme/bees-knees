@@ -52,7 +52,11 @@ class ImprovementSupaRepo(IImprovementRepo):
     def get_all(self) -> list[Improvement]:
         return [
             self._from_tbl_row(row)
-            for row in self.client.table(self.config.TABLE).select("*").execute().data
+            for row in self.client.table(self.config.TABLE)
+            .select("*")
+            .order("date_orig_ts", desc=True)
+            .execute()
+            .data
         ]
 
     def _to_tbl_row(self, imp: Improvement) -> dict[str, str | int]:
