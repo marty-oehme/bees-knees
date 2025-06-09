@@ -13,7 +13,7 @@ from prophet.domain.improvement_repo import IImprovementRepo
 from prophet.domain.original import Original
 from prophet.infra.improvement_pickle_repo import ImprovementPickleRepo
 from prophet.infra.improvement_supa_repo import ImprovementSupaRepo
-from prophet.llm import GroqClient
+from prophet.infra.llm_groq import GroqClient
 
 BEE_FEED = "https://babylonbee.com/feed"
 BEE_FEED_TEST = "test/resources/feed_short.atom"  # NOTE: Switch out when done testing
