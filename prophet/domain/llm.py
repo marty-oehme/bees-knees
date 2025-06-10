@@ -1,10 +1,11 @@
 from typing import Protocol
 
+from prophet.domain.improvement import Improvement
 from prophet.domain.original import Original
 
 
 class LLMClient(Protocol):
-    def get_alternative_title_suggestions(self, original_content: str) -> str:
+    def rewrite(self, original: Original) -> Improvement:
         raise NotImplementedError
 
     def rewrite_title(
@@ -15,4 +16,7 @@ class LLMClient(Protocol):
     def rewrite_summary(
         self, original: Original, improved_title: str | None = None
     ) -> str:
+        raise NotImplementedError
+
+    def get_alternative_title_suggestions(self, original_content: str) -> str:
         raise NotImplementedError

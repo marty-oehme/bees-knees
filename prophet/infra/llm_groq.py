@@ -21,6 +21,14 @@ class GroqClient(LLMClient):
         self.client = client if client else Groq(api_key=self.config_ai.API_KEY)
 
     @override
+    def rewrite(self, original: Original) -> Improvement:
+        suggestions = self.get_alternative_title_suggestions(original.title)
+        new_title = self.rewrite_title(original.title, suggestions)
+        new_summary = self.rewrite_summary(original, new_title)
+
+        return Improvement(original=original, title=new_title, summary=new_summary)
+
+    @override
     def get_alternative_title_suggestions(
         self, original_content: str, custom_prompt: str | None = None
     ) -> str:
