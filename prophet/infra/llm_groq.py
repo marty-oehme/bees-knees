@@ -35,10 +35,21 @@ class GroqClient(LLMClient):
         prompt = (
             custom_prompt
             if custom_prompt
-            else """You are a comedy writer at a satirical newspaper. Improve
-            on the following satirical headline. Your new headline is funny,
-            can involve current political events and has an edge to it. Print
-            only the suggestions, with one suggestion on each line."""
+            else """
+
+            Political context: We are in the year 2025, Donald Trump is
+            President of the United States again. There has been a crackdown on
+            'illegal' immigration, with controversial disappearings happening
+            almost every day. Many are calling the United States an
+            increasingly fascist state.
+
+            You are a comedy writer at a left-leaning satirical newspaper.
+            Improve on the following satirical headline. Your new headline is
+            funny, can involve current political events. and has an edge to it.
+            It should be roughly the length of the original headline. Print
+            only new suggestions, with one suggestion on each line.
+
+            """
         )
         suggestions = self.client.chat.completions.create(
             messages=[
@@ -73,10 +84,10 @@ class GroqClient(LLMClient):
         satirical headline. For a given headline, you diligently evaluate: (1)
         Whether the headline is funny; (2) Whether the headline follows a clear
         satirical goal; (3) Whether the headline has sufficient substance and
-        bite. Based on the outcomes of your review, you pick your favorite
-        headline from the given suggestions and you make targeted revisions to
-        it. Keep the length roughly to that of the original suggestions. Your
-        output consists solely of the revised headline.
+        bite; (4) Whether the headline is roughly the length of the original
+        suggestion. Based on the outcomes of your review, you pick your
+        favorite headline from the given suggestions and you make targeted
+        revisions to it. Your output consists solely of the revised headline.
         """
         )
         if not suggestions:
