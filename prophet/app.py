@@ -122,7 +122,7 @@ async def fetch_update(debug_print: bool = True):
 def start() -> None:
     from uvicorn import run
 
-    run("prophet.app:app", reload=True)
+    run("prophet.app:app", reload=True, host="0.0.0.0")
 
 
 if __name__ == "__main__":
