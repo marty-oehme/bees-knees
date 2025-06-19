@@ -1,7 +1,7 @@
 from datetime import timezone
 from typing import override
 
-from gotrue import datetime
+from datetime import datetime
 from supabase import Client
 
 from prophet.config import SupaConfig
