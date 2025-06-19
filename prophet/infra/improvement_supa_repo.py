@@ -1,7 +1,6 @@
-from datetime import timezone
+from datetime import datetime, timezone
 from typing import override
 
-from datetime import datetime
 from supabase import Client
 
 from prophet.config import SupaConfig
@@ -58,6 +57,28 @@ class ImprovementSupaRepo(IImprovementRepo):
             .execute()
             .data
         ]
+
+    @override
+    def remove(self, id: str) -> Improvement:
+        resp = (
+            self.client.table(self.config.TABLE).delete().eq("uuid", id).execute().data
+        )
+        if not resp:
+            raise ValueError
+        return self._from_tbl_row(resp[0])
+
+    @override
+    def remove_all(self, ids: list[str]) -> list[Improvement]:
+        resp = (
+            self.client.table(self.config.TABLE)
+            .delete()
+            .in_("uuid", ids)
+            .execute()
+            .data
+        )
+        if not resp:
+            raise ValueError
+        return [self._from_tbl_row(item) for item in resp]
 
     def _to_tbl_row(self, imp: Improvement) -> dict[str, str | int]:
         return {

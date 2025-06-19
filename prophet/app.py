@@ -19,6 +19,7 @@ BEE_FEED = "https://babylonbee.com/feed"
 BEE_FEED_TEST = "test/resources/feed_short.atom"  # NOTE: Switch out when done testing
 
 REFRESH_PERIOD = 3600  # between fetching articles, in seconds
+NUM_ARTICLES_TO_KEEP = 50
 
 llm: GroqClient = GroqClient()
 repo: IImprovementRepo = ImprovementSupaRepo()
@@ -107,6 +108,18 @@ def improve_summary(original_title: str, new_title: str, original_summary: str):
 @repeat_every(seconds=REFRESH_PERIOD)
 async def refresh_articles():
     _ = await fetch_update()
+    truncate_to(NUM_ARTICLES_TO_KEEP)
+
+
+def truncate_to(max_num: int = 50):
+    all = repo.get_all()
+    if len(all) > max_num:
+        to_delete = all[max_num:]
+        to_delete_ids = [a.id for a in to_delete]
+        try:
+            _ = repo.remove_all(to_delete_ids)
+        except ValueError:
+            print(f"Error deleting articles with IDs: {id}")
 
 
 @app.get("/update")
@@ -128,11 +141,12 @@ def start() -> None:
 if __name__ == "__main__":
     # start()
 
+    ## ADD MANUALLY
     # adding = keep_only_new_originals(grab_latest_originals())
     # improved = improve_originals(adding)
     # save_new_improvements(improved)
 
-    # migrate to newer version
+    ## SHOW ALL
     improved = repo.get_all()
     for imp in improved:
         imp.original.__post_init__()
@@ -144,4 +158,7 @@ if __name__ == "__main__":
         print(f"Summary: {imp.summary}")
 
         print("-" * 50)
-    repo.add_all(improved)
+    # repo.add_all(improved)
+
+    ## DELETE TOO_MANY
+    # truncate_to(48)
