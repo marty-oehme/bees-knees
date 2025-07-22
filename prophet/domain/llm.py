@@ -5,7 +5,9 @@ from prophet.domain.original import Original
 
 
 class LLMClient(Protocol):
-    def rewrite(self, original: Original) -> Improvement:
+    def rewrite(
+        self, original: Original, previous_titles: list[str] | None = None
+    ) -> Improvement:
         raise NotImplementedError
 
     def rewrite_title(

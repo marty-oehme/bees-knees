@@ -21,7 +21,9 @@ class GroqClient(LLMClient):
         self.client = client if client else Groq(api_key=self.config_ai.API_KEY)
 
     @override
-    def rewrite(self, original: Original) -> Improvement:
+    def rewrite(
+        self, original: Original, previous_titles: list[str] | None = None
+    ) -> Improvement:
         suggestions = self.get_alternative_title_suggestions(original.title)
         new_title = self.rewrite_title(original.title, suggestions)
         new_summary = self.rewrite_summary(original, new_title)
@@ -30,24 +32,35 @@ class GroqClient(LLMClient):
 
     @override
     def get_alternative_title_suggestions(
-        self, original_content: str, custom_prompt: str | None = None
+        self,
+        original_content: str,
+        previous_titles: list[str] | None = None,
+        custom_prompt: str | None = None,
     ) -> str:
         prompt = (
             custom_prompt
             if custom_prompt
-            else """
+            else f"""
 
             Political context: We are in the year 2025, Donald Trump is
             President of the United States again. There has been a crackdown on
             'illegal' immigration, with controversial disappearings happening
-            almost every day. Many are calling the United States an
-            increasingly fascist state.
+            almost every day by masked ICE agents. Many view the United States
+            as an increasingly fascist state, and the disappearings fueled by
+            racism.
 
             You are a comedy writer at a left-leaning satirical newspaper.
             Improve on the following satirical headline. Your new headline is
             funny, can involve current political events. and has an edge to it.
             It should be roughly the length of the original headline. Print
             only new suggestions, with one suggestion on each line.
+
+            Do not create a headline naming Trump if more than 2 of the
+            previous headlines already do so and he is not specifically
+            referenced in the original headline.
+
+            {"The previous 5 headlines you created are the following:\n- " if previous_titles else ""}
+            {"\n- ".join(previous_titles) if previous_titles else ""}
 
             """
         )
