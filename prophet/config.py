@@ -9,6 +9,16 @@ _ = load_dotenv()
 
 
 @dataclass
+class AppConfig:
+    PORT: int
+
+    @classmethod
+    def from_env(cls) -> "AppConfig":
+        PORT = os.getenv("PORT", "8000")
+        return cls(PORT=int(PORT))
+
+
+@dataclass
 class AiConfig:
     API_KEY: str
 

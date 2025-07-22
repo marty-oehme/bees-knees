@@ -8,6 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi_utils.tasks import repeat_every
 
 from prophet import view
+from prophet.config import AppConfig
 from prophet.domain.improvement import Improvement
 from prophet.domain.improvement_repo import IImprovementRepo
 from prophet.domain.original import Original
@@ -135,7 +136,9 @@ async def fetch_update(debug_print: bool = True):
 def start() -> None:
     from uvicorn import run
 
-    run("prophet.app:app", reload=True, host="0.0.0.0")
+    config = AppConfig.from_env()
+
+    run("prophet.app:app", reload=True, host="0.0.0.0", port=config.PORT)
 
 
 if __name__ == "__main__":
