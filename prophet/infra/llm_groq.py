@@ -41,7 +41,6 @@ class GroqClient(LLMClient):
             custom_prompt
             if custom_prompt
             else f"""
-
             Political context: We are in the year 2025, Donald Trump is
             President of the United States again. There has been a crackdown on
             'illegal' immigration, with controversial disappearings happening
@@ -57,11 +56,14 @@ class GroqClient(LLMClient):
 
             Do not create a headline naming Trump if more than 2 of the
             previous headlines already do so and he is not specifically
-            referenced in the original headline.
+            referenced in the original headline. Ensure you do not repeat too
+            much wording from your previous headlines.
 
-            {"The previous 5 headlines you created are the following:\n- " if previous_titles else ""}
+            {"The previous 5 headlines you created were the following:\n- " if previous_titles else ""}
             {"\n- ".join(previous_titles) if previous_titles else ""}
 
+            When creating the new headline, try to stick close to the topic of
+            the original headline.
             """
         )
         suggestions = self.client.chat.completions.create(
@@ -72,7 +74,7 @@ class GroqClient(LLMClient):
                 },
                 {
                     "role": "user",
-                    "content": original_content,
+                    "content": f"The headline to rewrite is the following: {original_content}",
                 },
             ],
             model="llama-3.3-70b-versatile",
@@ -153,3 +155,20 @@ class GroqClient(LLMClient):
             raise ValueError
         print("Improved summary", summary_str)
         return summary_str.strip(" \"'")
+
+
+if __name__ == "__main__":
+    from datetime import datetime
+
+    cfg = AiConfig.from_env()
+    llm = GroqClient(cfg)
+    print(
+        llm.rewrite(
+            Original(
+                title="Obama Argues He Can’t Be Charged With Treason Since He Wasn’t Born In America",
+                summary="WASHINGTON, D.C. — In a blow to hopes from conservatives that the former president would face severe consequences for allegedly overseeing an attempt to deligitimize the Trump presidency, Barack Obama argued that he can't be charged with treason since he wasn't born in America and isn't a legitimate American citizen.",
+                link="",
+                date=datetime.now(),
+            )
+        )
+    )
