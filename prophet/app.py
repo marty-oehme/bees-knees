@@ -138,7 +138,7 @@ def start() -> None:
 
     config = AppConfig.from_env()
 
-    run("prophet.app:app", reload=True, host="0.0.0.0", port=config.PORT)
+    run("prophet.app:app", reload=config.DEVMODE, host="0.0.0.0", port=config.PORT)
 
 
 if __name__ == "__main__":

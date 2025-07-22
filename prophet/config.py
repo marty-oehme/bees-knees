@@ -10,12 +10,16 @@ _ = load_dotenv()
 
 @dataclass
 class AppConfig:
+    DEVMODE: bool
     PORT: int
 
     @classmethod
     def from_env(cls) -> "AppConfig":
-        PORT = os.getenv("PORT", "8000")
-        return cls(PORT=int(PORT))
+        PORT = os.getenv("BEES_PORT", os.getenv("PORT", "8000"))
+        return cls(
+            PORT=int(PORT),
+            DEVMODE=bool(os.getenv("BEES_DEVMODE", False))
+        )
 
 
 @dataclass
