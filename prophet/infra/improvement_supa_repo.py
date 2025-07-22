@@ -48,15 +48,22 @@ class ImprovementSupaRepo(IImprovementRepo):
         )
 
     @override
-    def get_all(self) -> list[Improvement]:
-        return [
-            self._from_tbl_row(row)
-            for row in self.client.table(self.config.TABLE)
-            .select("*")
-            .order("date_orig_ts", desc=True)
-            .execute()
-            .data
-        ]
+    def get_all(self, last_n: int | None = None) -> list[Improvement]:
+        if not last_n:
+            sql = (
+                self.client.table(self.config.TABLE)
+                .select("*")
+                .order("date_orig_ts", desc=True)
+            )
+        else:
+            sql = (
+                self.client.table(self.config.TABLE)
+                .select("*")
+                .order("date_orig_ts", desc=True)
+                .limit(last_n)
+            )
+
+        return [self._from_tbl_row(row) for row in sql.execute().data]
 
     @override
     def remove(self, id: str) -> Improvement:
@@ -110,6 +117,7 @@ class ImprovementSupaRepo(IImprovementRepo):
 if __name__ == "__main__":
     # response = supabase.table("improvements").select("*").execute()
     repo = ImprovementSupaRepo()
+    print("latest entries:\n- ", "\n- ".join([imp.title for imp in repo.get_all(3)]))
 
     # from prophet.app import grab_latest_originals
     # latest = grab_latest_originals()

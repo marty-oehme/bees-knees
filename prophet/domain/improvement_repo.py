@@ -17,7 +17,7 @@ class IImprovementRepo(Protocol):
     def get(self, id: str) -> Improvement:
         raise NotImplementedError
 
-    def get_all(self) -> list[Improvement]:
+    def get_all(self, last_n: int | None = None) -> list[Improvement]:
         raise NotImplementedError
 
     def remove(self, id: str) -> Improvement:
