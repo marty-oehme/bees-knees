@@ -45,6 +45,10 @@ body {
   opacity: 0.8;
 }
 
+.fab-icon-holder.disabled {
+  background: #333333
+}
+
 .fab-icon-holder .icon {
   display: flex;
   align-items: center;
