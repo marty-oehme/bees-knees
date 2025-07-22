@@ -1,7 +1,7 @@
 [project]
-name = "pollen-prophet"
+name = "bees-knees"
 version = "0.1.0"
-description = "Add your description here"
+description = "Where fact checking is optional, but irony is not."
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
